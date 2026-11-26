@@ -1,0 +1,193 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6f4;
+  color: #18352a;
+}
+
+button, select {
+  font: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: 85px;
+}
+
+.header {
+  background: #123b2c;
+  color: white;
+  padding: 22px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.header small {
+  color: #d9c58c;
+  letter-spacing: 3px;
+}
+
+.icon-button {
+  background: transparent;
+  border: 0;
+  color: white;
+}
+
+.content {
+  padding: 22px 16px;
+  max-width: 850px;
+  margin: auto;
+}
+
+.content h2 {
+  margin-bottom: 5px;
+}
+
+.muted {
+  color: #718078;
+  margin-top: 5px;
+}
+
+label {
+  display: block;
+  margin: 22px 0 8px;
+  font-weight: bold;
+}
+
+select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d6dfd9;
+  border-radius: 10px;
+  background: white;
+  color: #18352a;
+}
+
+.welcome {
+  margin-top: 20px;
+  padding: 22px;
+  border-radius: 16px;
+  background: #164b37;
+  color: white;
+}
+
+.welcome h3 {
+  margin: 10px 0;
+}
+
+.welcome small {
+  color: #d9c58c;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0 28px;
+}
+
+.stat-card {
+  background: white;
+  padding: 17px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px #18352a10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-card svg {
+  color: #27845c;
+}
+
+.stat-card span {
+  color: #718078;
+  font-size: 13px;
+}
+
+.stat-card strong {
+  font-size: 19px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.menu-card {
+  min-height: 105px;
+  background: white;
+  border: 1px solid #e1e9e3;
+  border-radius: 14px;
+  padding: 17px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #194b36;
+  font-weight: bold;
+}
+
+.menu-card svg {
+  width: 25px;
+  height: 25px;
+}
+
+.notice {
+  margin-top: 25px;
+  padding: 14px;
+  background: #fff8e6;
+  color: #765c1d;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e1e9e3;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 4px;
+}
+
+.bottom-nav span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #426451;
+}
+
+.bottom-nav svg {
+  width: 21px;
+  height: 21px;
+}
+
+@media (min-width: 650px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
