@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from './supabase';
+import { supabase } from '../../supabase.js/src/supabase.js';
 import {
   Wallet, Lock, Mail, LogOut,
   LayoutDashboard, Building2, LoaderCircle
