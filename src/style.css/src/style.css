@@ -1,338 +1,78 @@
 
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+:root{font-family:Inter,Arial,sans-serif;color:#18352a;background:#f3f6f4}
+body{margin:0;min-width:320px;min-height:100vh;background:#f3f6f4}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:linear-gradient(145deg,#103b2b,#1d6548)}
+.login-card{width:100%;max-width:420px;padding:32px 25px;background:#fff;border-radius:22px;box-shadow:0 15px 45px #0003}
+.login-logo{width:70px;height:70px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border-radius:20px;background:#e8f2eb;color:#176443}
+.login-card h1,.login-card h3{text-align:center;margin:0;color:#123b2c}
+.login-card h1{font-size:25px;letter-spacing:1px}
+.login-card h3{margin-top:7px;color:#b18b39;letter-spacing:4px;font-size:13px}
+.login-card>p{text-align:center;color:#718078;margin:12px 0 28px}
+.login-card label,.transaction-form label{display:block;margin:17px 0 8px;font-size:14px;font-weight:700}
+.login-input{display:flex;align-items:center;gap:10px;padding:0 13px;border:1px solid #d6dfd9;border-radius:11px;background:#fbfcfb;color:#39805e}
+.login-input:focus-within{border-color:#27845c;box-shadow:0 0 0 3px #27845c18}
+.login-input input{width:100%;min-width:0;padding:14px 0;border:0;outline:0;background:transparent;color:#18352a}
+.login-button{width:100%;margin-top:25px;padding:15px;border:0;border-radius:11px;background:#176443;color:#fff;font-weight:700}
+.login-card small{display:block;margin-top:22px;text-align:center;color:#87938c}
+.error{padding:11px;border-radius:9px;background:#fff0f0;color:#b42318;font-size:13px}
+.notice{margin-top:16px;padding:13px;border-radius:10px;background:#fff8e6;color:#765c1d;font-size:13px}
+.app{min-height:100vh;padding-bottom:40px}
+.header{position:sticky;top:0;z-index:5;background:#123b2c;color:#fff;padding:17px max(18px,calc((100% - 850px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 3px 12px #10251d20}
+.header strong{font-size:18px;letter-spacing:1px}
+.header small{display:block;margin-top:4px;color:#d9c58c;letter-spacing:3px;font-size:10px}
+.header button,.finance-heading button,.section-heading button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 13px;border:1px solid #ffffff50;border-radius:9px;background:transparent;color:inherit}
+.content{width:100%;max-width:850px;margin:auto;padding:22px 16px}
+.welcome{margin:4px 0 18px;padding:20px;border-radius:16px;background:#164b37;color:#fff}
+.welcome h2{margin:0 0 7px;font-size:23px}
+.welcome p{margin:0;color:#e0eee6;font-size:14px;overflow-wrap:anywhere}
+.stat-card{padding:16px;border-radius:14px;background:#fff;box-shadow:0 3px 12px #18352a10;display:flex;flex-direction:column;gap:10px}
+.stat-card svg{color:#27845c}
+.stat-card h3{margin:0;font-size:15px}
+.stat-card select{width:100%;padding:12px;border:1px solid #d6dfd9;border-radius:9px;background:#fff;color:#18352a}
+.finance-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}
+.finance-heading h3{margin:0;font-size:17px}
+.finance-heading button{border-color:#cbd9d0;color:#24543e;background:#fff}
+.finance-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:24px}
+.finance-card{min-width:0;padding:17px;border-radius:14px;background:#fff;box-shadow:0 3px 12px #18352a10;display:grid;grid-template-columns:30px 1fr;align-items:center;gap:8px 10px}
+.finance-card svg{grid-row:span 2}
+.finance-card span{color:#718078;font-size:13px}
+.finance-card strong{font-size:19px;overflow-wrap:anywhere}
+.finance-card.income svg,.amount-income{color:#16834d}
+.finance-card.expense svg,.amount-expense{color:#c04438}
+.finance-card.balance svg{color:#276c9c}
+.transaction-section{padding:18px;border-radius:16px;background:#fff;box-shadow:0 3px 14px #18352a10}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.section-heading h3{margin:0;font-size:18px}
+.section-heading p{margin:5px 0 0;color:#718078;font-size:13px}
+.section-heading button{flex-shrink:0;border:0;background:#176443;color:#fff}
+.transaction-form{margin:0 0 22px;padding:17px;border:1px solid #dce8df;border-radius:13px;background:#f8fbf9}
+.form-heading{display:flex;align-items:center;justify-content:space-between}
+.form-heading h3{margin:0}
+.form-heading button{border:0;background:transparent;color:#53665b}
+.transaction-form input,.transaction-form select,.transaction-form textarea{width:100%;padding:12px;border:1px solid #d6dfd9;border-radius:9px;background:#fff;color:#18352a;outline-color:#27845c}
+.transaction-form textarea{resize:vertical}
+.transaction-form>button[type=submit]{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;padding:13px;border:0;border-radius:10px;background:#176443;color:#fff;font-weight:700}
+.transaction-list h3{display:flex;align-items:center;gap:8px;margin:18px 0 12px;font-size:16px}
+.transaction-list>p{color:#718078;font-size:14px}
+.transaction-item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 0;border-top:1px solid #e8eee9}
+.transaction-item>div{display:flex;flex-direction:column;gap:5px;min-width:0}
+.transaction-item>div strong{color:#18352a}
+.transaction-item small{color:#718078;font-size:12px;overflow-wrap:anywhere}
+.transaction-item>strong{flex-shrink:0;text-align:right;font-size:14px;overflow-wrap:anywhere}
+@media(min-width:620px){
+.finance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.content{padding:28px 20px}
+.transaction-section{padding:22px}
 }
-
-:root {
-  font-family: Arial, sans-serif;
-  color: #18352a;
-  background: #f3f6f4;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: #f3f6f4;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-/* HALAMAN LOGIN */
-
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 16px;
-  background: linear-gradient(145deg, #103b2b, #1d6548);
-}
-
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  padding: 32px 25px;
-  background: #ffffff;
-  border-radius: 22px;
-  box-shadow: 0 15px 45px #00000030;
-}
-
-.login-logo {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  background: #e8f2eb;
-  color: #176443;
-}
-
-.login-card h1 {
-  margin: 0;
-  text-align: center;
-  font-size: 25px;
-  letter-spacing: 1px;
-  color: #123b2c;
-}
-
-.login-subtitle {
-  margin: 8px 0;
-  text-align: center;
-  color: #b18b39;
-  font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 4px;
-}
-
-.login-description {
-  margin: 10px 0 28px;
-  text-align: center;
-  color: #718078;
-  font-size: 14px;
-}
-
-.login-card label {
-  display: block;
-  margin: 18px 0 8px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.login-input {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 13px;
-  border: 1px solid #d6dfd9;
-  border-radius: 11px;
-  background: #fbfcfb;
-  color: #39805e;
-}
-
-.login-input:focus-within {
-  border-color: #27845c;
-  box-shadow: 0 0 0 3px #27845c18;
-}
-
-.login-input input {
-  width: 100%;
-  min-width: 0;
-  padding: 14px 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #18352a;
-  font-size: 15px;
-}
-
-.login-button {
-  width: 100%;
-  margin-top: 25px;
-  padding: 15px;
-  border: 0;
-  border-radius: 11px;
-  background: #176443;
-  color: white;
-  font-weight: bold;
-}
-
-.login-button:disabled {
-  opacity: 0.6;
-}
-
-.login-footer {
-  margin: 25px 0 0;
-  text-align: center;
-  color: #87938c;
-  font-size: 12px;
-}
-
-.error {
-  padding: 11px;
-  border-radius: 9px;
-  background: #fff0f0;
-  color: #b42318;
-  font-size: 13px;
-}
-
-/* APLIKASI */
-
-.app {
-  min-height: 100vh;
-  padding-bottom: 85px;
-}
-
-.header {
-  background: #123b2c;
-  color: white;
-  padding: 19px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.header small {
-  display: block;
-  margin-top: 5px;
-  color: #d9c58c;
-  letter-spacing: 3px;
-  font-size: 10px;
-}
-
-.logout-button {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 13px;
-  border: 1px solid #ffffff50;
-  border-radius: 9px;
-  background: transparent;
-  color: white;
-}
-
-.content {
-  width: 100%;
-  max-width: 850px;
-  margin: auto;
-  padding: 22px 16px;
-}
-
-.content h2 {
-  margin: 0 0 6px;
-  font-size: 23px;
-}
-
-.muted {
-  margin-top: 5px;
-  color: #718078;
-  font-size: 14px;
-}
-
-.welcome {
-  margin-top: 22px;
-  padding: 22px;
-  border-radius: 16px;
-  background: #164b37;
-  color: white;
-}
-
-.welcome h3 {
-  margin: 12px 0;
-}
-
-.welcome select {
-  width: 100%;
-  margin-top: 8px;
-  padding: 13px;
-  border: 0;
-  border-radius: 9px;
-  background: white;
-  color: #18352a;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0 28px;
-}
-
-.stat-card {
-  min-width: 0;
-  padding: 17px;
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 3px 12px #18352a10;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.stat-card svg {
-  color: #27845c;
-}
-
-.stat-card span {
-  color: #718078;
-  font-size: 13px;
-}
-
-.stat-card strong {
-  font-size: 19px;
-  overflow-wrap: anywhere;
-}
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.menu-card {
-  min-height: 105px;
-  padding: 17px 10px;
-  border: 1px solid #e1e9e3;
-  border-radius: 14px;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: #194b36;
-  font-weight: bold;
-  text-align: center;
-}
-
-.menu-card svg {
-  width: 25px;
-  height: 25px;
-}
-
-.notice {
-  margin-top: 25px;
-  padding: 14px;
-  border-radius: 10px;
-  background: #fff8e6;
-  color: #765c1d;
-  font-size: 13px;
-}
-
-/* NAVIGASI BAWAH */
-
-.bottom-nav {
-  position: fixed;
-  z-index: 10;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 11px 4px;
-  border-top: 1px solid #e1e9e3;
-  background: white;
-  display: flex;
-  justify-content: space-around;
-}
-
-.bottom-nav span {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  color: #426451;
-  font-size: 11px;
-}
-
-.bottom-nav svg {
-  width: 21px;
-  height: 21px;
-}
-
-/* LAYAR LEBAR */
-
-@media (min-width: 650px) {
-  .cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .menu-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+@media(max-width:420px){
+.section-heading{align-items:flex-start;flex-direction:column}
+.section-heading button{width:100%}
+.finance-heading{align-items:flex-start}
+.finance-heading button{font-size:12px}
+.transaction-item{gap:7px}
+.transaction-item>strong{font-size:13px}
 }
