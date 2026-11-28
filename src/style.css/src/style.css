@@ -3,16 +3,150 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
+:root {
   font-family: Arial, sans-serif;
-  background: #f3f6f4;
   color: #18352a;
+  background: #f3f6f4;
 }
 
-button, select {
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f3f6f4;
+}
+
+button,
+input,
+select {
   font: inherit;
 }
+
+button {
+  cursor: pointer;
+}
+
+/* HALAMAN LOGIN */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(145deg, #103b2b, #1d6548);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 25px;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 15px 45px #00000030;
+}
+
+.login-logo {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: #e8f2eb;
+  color: #176443;
+}
+
+.login-card h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 25px;
+  letter-spacing: 1px;
+  color: #123b2c;
+}
+
+.login-subtitle {
+  margin: 8px 0;
+  text-align: center;
+  color: #b18b39;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 4px;
+}
+
+.login-description {
+  margin: 10px 0 28px;
+  text-align: center;
+  color: #718078;
+  font-size: 14px;
+}
+
+.login-card label {
+  display: block;
+  margin: 18px 0 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.login-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  border: 1px solid #d6dfd9;
+  border-radius: 11px;
+  background: #fbfcfb;
+  color: #39805e;
+}
+
+.login-input:focus-within {
+  border-color: #27845c;
+  box-shadow: 0 0 0 3px #27845c18;
+}
+
+.login-input input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #18352a;
+  font-size: 15px;
+}
+
+.login-button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 15px;
+  border: 0;
+  border-radius: 11px;
+  background: #176443;
+  color: white;
+  font-weight: bold;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+}
+
+.login-footer {
+  margin: 25px 0 0;
+  text-align: center;
+  color: #87938c;
+  font-size: 12px;
+}
+
+.error {
+  padding: 11px;
+  border-radius: 9px;
+  background: #fff0f0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+/* APLIKASI */
 
 .app {
   min-height: 100vh;
@@ -22,61 +156,58 @@ button, select {
 .header {
   background: #123b2c;
   color: white;
-  padding: 22px 20px;
+  padding: 19px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .brand {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   letter-spacing: 1px;
 }
 
 .header small {
+  display: block;
+  margin-top: 5px;
   color: #d9c58c;
   letter-spacing: 3px;
+  font-size: 10px;
 }
 
-.icon-button {
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 13px;
+  border: 1px solid #ffffff50;
+  border-radius: 9px;
   background: transparent;
-  border: 0;
   color: white;
 }
 
 .content {
-  padding: 22px 16px;
+  width: 100%;
   max-width: 850px;
   margin: auto;
+  padding: 22px 16px;
 }
 
 .content h2 {
-  margin-bottom: 5px;
+  margin: 0 0 6px;
+  font-size: 23px;
 }
 
 .muted {
-  color: #718078;
   margin-top: 5px;
-}
-
-label {
-  display: block;
-  margin: 22px 0 8px;
-  font-weight: bold;
-}
-
-select {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #d6dfd9;
-  border-radius: 10px;
-  background: white;
-  color: #18352a;
+  color: #718078;
+  font-size: 14px;
 }
 
 .welcome {
-  margin-top: 20px;
+  margin-top: 22px;
   padding: 22px;
   border-radius: 16px;
   background: #164b37;
@@ -84,24 +215,31 @@ select {
 }
 
 .welcome h3 {
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
-.welcome small {
-  color: #d9c58c;
+.welcome select {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  border: 0;
+  border-radius: 9px;
+  background: white;
+  color: #18352a;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin: 20px 0 28px;
 }
 
 .stat-card {
-  background: white;
+  min-width: 0;
   padding: 17px;
   border-radius: 14px;
+  background: white;
   box-shadow: 0 3px 12px #18352a10;
   display: flex;
   flex-direction: column;
@@ -119,20 +257,21 @@ select {
 
 .stat-card strong {
   font-size: 19px;
+  overflow-wrap: anywhere;
 }
 
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
 .menu-card {
   min-height: 105px;
-  background: white;
+  padding: 17px 10px;
   border: 1px solid #e1e9e3;
   border-radius: 14px;
-  padding: 17px 10px;
+  background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,6 +279,7 @@ select {
   gap: 12px;
   color: #194b36;
   font-weight: bold;
+  text-align: center;
 }
 
 .menu-card svg {
@@ -150,22 +290,25 @@ select {
 .notice {
   margin-top: 25px;
   padding: 14px;
+  border-radius: 10px;
   background: #fff8e6;
   color: #765c1d;
-  border-radius: 10px;
   font-size: 13px;
 }
 
+/* NAVIGASI BAWAH */
+
 .bottom-nav {
   position: fixed;
+  z-index: 10;
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
+  padding: 11px 4px;
   border-top: 1px solid #e1e9e3;
+  background: white;
   display: flex;
   justify-content: space-around;
-  padding: 12px 4px;
 }
 
 .bottom-nav span {
@@ -173,8 +316,8 @@ select {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
   color: #426451;
+  font-size: 11px;
 }
 
 .bottom-nav svg {
@@ -182,12 +325,14 @@ select {
   height: 21px;
 }
 
+/* LAYAR LEBAR */
+
 @media (min-width: 650px) {
   .cards {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .menu-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
