@@ -14,7 +14,10 @@ const money = value =>
     maximumFractionDigits: 0
   }).format(Number(value || 0));
 
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -40,12 +43,10 @@ export default function App() {
     note: ''
   });
 
-  const selectedInstitution = institutions.find(
-    item => item.id === selected
-  );
+  const institution = institutions.find(x => x.id === selected);
 
-  const filteredCategories = categories.filter(
-    item => item.transaction_type === form.transaction_type
+  const availableCategories = categories.filter(
+    x => x.transaction_type === form.transaction_type
   );
 
   useEffect(() => {
@@ -55,35 +56,32 @@ export default function App() {
       setLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-      }
+    const { data } = supabase.auth.onAuthStateChange(
+      (_event, session) => setSession(session)
     );
 
-    return () => listener.subscription.unsubscribe();
+    return () => data.subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (!session) {
+    if (session) loadInstitutions();
+    else {
       setInstitutions([]);
       setSelected('');
-      return;
     }
-    loadInstitutions();
   }, [session]);
 
   useEffect(() => {
-    if (!selected) {
+    if (selected) loadData();
+    else {
       setCategories([]);
       setTransactions([]);
-      return;
     }
-    loadInstitutionData();
   }, [selected]);
 
   async function loadInstitutions() {
     setError('');
+
     const { data, error } = await supabase
       .from('finance_institutions')
       .select('id, code, name')
@@ -91,21 +89,18 @@ export default function App() {
       .order('code');
 
     if (error) {
-      setError('Gagal mengambil data lembaga: ' + error.message);
+      setError('Gagal memuat lembaga: ' + error.message);
       return;
     }
 
     setInstitutions(data || []);
-
-    if (data?.length && !selected) {
-      setSelected(data[0].id);
-    }
+    if (data?.length && !selected) setSelected(data[0].id);
   }
 
-  async function loadInstitutionData() {
+  async function loadData() {
     setError('');
 
-    const [categoryResult, transactionResult] = await Promise.all([
+    const [cat, trx] = await Promise.all([
       supabase
         .from('finance_categories')
         .select('id, name, transaction_type, is_recurring')
@@ -119,24 +114,18 @@ export default function App() {
         .eq('institution_id', selected)
         .order('transaction_date', { ascending: false })
         .order('created_at', { ascending: false })
-        .limit(50)
+        .limit(100)
     ]);
 
-    if (categoryResult.error) {
-      setError('Gagal mengambil kategori: ' + categoryResult.error.message);
-    } else {
-      setCategories(categoryResult.data || []);
-    }
+    if (cat.error) setError('Kategori: ' + cat.error.message);
+    else setCategories(cat.data || []);
 
-    if (transactionResult.error) {
-      setError('Gagal mengambil transaksi: ' + transactionResult.error.message);
-    } else {
-      setTransactions(transactionResult.data || []);
-    }
+    if (trx.error) setError('Transaksi: ' + trx.error.message);
+    else setTransactions(trx.data || []);
   }
 
-  async function handleLogin(event) {
-    event.preventDefault();
+  async function login(e) {
+    e.preventDefault();
     setBusy(true);
     setError('');
 
@@ -149,51 +138,36 @@ export default function App() {
     setBusy(false);
   }
 
-  async function handleLogout() {
+  async function logout() {
     await supabase.auth.signOut();
     setSession(null);
-    setInstitutions([]);
     setSelected('');
   }
 
-  function updateForm(field, value) {
-    setForm(current => ({
-      ...current,
+  function changeForm(field, value) {
+    setForm(old => ({
+      ...old,
       [field]: value,
       ...(field === 'transaction_type' ? { category_id: '' } : {})
     }));
   }
 
-  async function saveTransaction(event) {
-    event.preventDefault();
+  async function saveTransaction(e) {
+    e.preventDefault();
     setBusy(true);
     setError('');
     setSuccess('');
 
-    if (!selected) {
-      setError('Pilih lembaga terlebih dahulu.');
-      setBusy(false);
-      return;
-    }
+    const category = categories.find(x => x.id === form.category_id);
 
-    if (!form.category_id) {
-      setError('Silakan pilih kategori transaksi.');
+    if (!selected || !category) {
+      setError('Pilih lembaga dan kategori terlebih dahulu.');
       setBusy(false);
       return;
     }
 
     if (!Number.isFinite(Number(form.amount)) || Number(form.amount) <= 0) {
       setError('Nominal harus lebih besar dari nol.');
-      setBusy(false);
-      return;
-    }
-
-    const category = categories.find(
-      item => item.id === form.category_id
-    );
-
-    if (!category) {
-      setError('Kategori tidak ditemukan. Muat ulang kategori.');
       setBusy(false);
       return;
     }
@@ -216,7 +190,7 @@ export default function App() {
       .insert(payload);
 
     if (error) {
-      setError('Transaksi gagal disimpan: ' + error.message);
+      setError('Gagal menyimpan transaksi: ' + error.message);
     } else {
       setSuccess('Transaksi berhasil disimpan.');
       setForm({
@@ -229,19 +203,19 @@ export default function App() {
         note: ''
       });
       setShowForm(false);
-      await loadInstitutionData();
+      await loadData();
     }
 
     setBusy(false);
   }
 
-  const totalIncome = transactions
-    .filter(item => item.transaction_type === 'income')
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+  const income = transactions
+    .filter(x => x.transaction_type === 'income')
+    .reduce((sum, x) => sum + Number(x.amount), 0);
 
-  const totalExpense = transactions
-    .filter(item => item.transaction_type === 'expense')
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+  const expense = transactions
+    .filter(x => x.transaction_type === 'expense')
+    .reduce((sum, x) => sum + Number(x.amount), 0);
 
   if (loading) {
     return <div className="login-page">Memuat aplikasi...</div>;
@@ -250,10 +224,8 @@ export default function App() {
   if (!session) {
     return (
       <div className="login-page">
-        <form className="login-card" onSubmit={handleLogin}>
-          <div className="login-logo">
-            <Wallet size={42} />
-          </div>
+        <form className="login-card" onSubmit={login}>
+          <div className="login-logo"><Wallet size={42} /></div>
           <h1>SMART FINANCE</h1>
           <h3>MQ ALHAQQ</h3>
           <p>Sistem Informasi Keuangan Lembaga</p>
@@ -300,7 +272,7 @@ export default function App() {
           <strong>SMART FINANCE</strong>
           <small>MQ ALHAQQ</small>
         </div>
-        <button onClick={handleLogout}>
+        <button onClick={logout}>
           <LogOut size={18} /> Keluar
         </button>
       </header>
@@ -312,7 +284,7 @@ export default function App() {
         </section>
 
         <section className="stat-card">
-          <Building2 size={28} />
+          <Building2 size={26} />
           <h3>Pilih Lembaga</h3>
           <select
             value={selected}
@@ -322,28 +294,20 @@ export default function App() {
               setError('');
             }}
           >
-            {institutions.map(item => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
+            {institutions.map(x => (
+              <option key={x.id} value={x.id}>{x.name}</option>
             ))}
           </select>
         </section>
 
-        {!institutions.length && (
-          <p className="notice">
-            Belum ada lembaga yang dapat diakses akun ini.
-          </p>
-        )}
+        {error && <p className="error">{error}</p>}
+        {success && <p className="notice">{success}</p>}
 
-        {selectedInstitution && (
+        {institution && (
           <>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="notice">{success}</p>}
-
             <section className="finance-heading">
-              <h3>{selectedInstitution.name}</h3>
-              <button onClick={loadInstitutionData}>
+              <h3>{institution.name}</h3>
+              <button onClick={loadData}>
                 <RefreshCw size={17} /> Muat ulang
               </button>
             </section>
@@ -352,17 +316,19 @@ export default function App() {
               <div className="finance-card income">
                 <ArrowUpCircle size={25} />
                 <span>Total Pemasukan</span>
-                <strong>{money(totalIncome)}</strong>
+                <strong>{money(income)}</strong>
               </div>
+
               <div className="finance-card expense">
                 <ArrowDownCircle size={25} />
                 <span>Total Pengeluaran</span>
-                <strong>{money(totalExpense)}</strong>
+                <strong>{money(expense)}</strong>
               </div>
+
               <div className="finance-card balance">
                 <Wallet size={25} />
                 <span>Selisih Transaksi</span>
-                <strong>{money(totalIncome - totalExpense)}</strong>
+                <strong>{money(income - expense)}</strong>
               </div>
             </section>
 
@@ -393,31 +359,29 @@ export default function App() {
                   <label>Jenis Transaksi</label>
                   <select
                     value={form.transaction_type}
-                    onChange={e => updateForm('transaction_type', e.target.value)}
+                    onChange={e => changeForm('transaction_type', e.target.value)}
                   >
                     <option value="income">Pemasukan</option>
                     <option value="expense">Pengeluaran</option>
                   </select>
 
-                  <label>Tanggal</label>
+                  <label>Tanggal Transaksi</label>
                   <input
                     type="date"
                     value={form.transaction_date}
-                    onChange={e => updateForm('transaction_date', e.target.value)}
+                    onChange={e => changeForm('transaction_date', e.target.value)}
                     required
                   />
 
                   <label>Kategori</label>
                   <select
                     value={form.category_id}
-                    onChange={e => updateForm('category_id', e.target.value)}
+                    onChange={e => changeForm('category_id', e.target.value)}
                     required
                   >
                     <option value="">Pilih kategori</option>
-                    {filteredCategories.map(item => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
+                    {availableCategories.map(x => (
+                      <option key={x.id} value={x.id}>{x.name}</option>
                     ))}
                   </select>
 
@@ -427,7 +391,7 @@ export default function App() {
                     min="1"
                     step="1"
                     value={form.amount}
-                    onChange={e => updateForm('amount', e.target.value)}
+                    onChange={e => changeForm('amount', e.target.value)}
                     placeholder="Contoh: 500000"
                     required
                   />
@@ -435,7 +399,7 @@ export default function App() {
                   <label>Metode Pembayaran</label>
                   <select
                     value={form.payment_method}
-                    onChange={e => updateForm('payment_method', e.target.value)}
+                    onChange={e => changeForm('payment_method', e.target.value)}
                   >
                     <option value="Tunai">Tunai</option>
                     <option value="Transfer">Transfer</option>
@@ -443,18 +407,17 @@ export default function App() {
 
                   <label>Sumber / Penerima Dana</label>
                   <input
-                    type="text"
                     value={form.source_or_recipient}
-                    onChange={e => updateForm('source_or_recipient', e.target.value)}
+                    onChange={e => changeForm('source_or_recipient', e.target.value)}
                     placeholder="Nama sumber atau penerima"
                   />
 
                   <label>Catatan</label>
                   <textarea
-                    value={form.note}
-                    onChange={e => updateForm('note', e.target.value)}
-                    placeholder="Keterangan tambahan (opsional)"
                     rows="3"
+                    value={form.note}
+                    onChange={e => changeForm('note', e.target.value)}
+                    placeholder="Keterangan tambahan"
                   />
 
                   <button type="submit" disabled={busy}>
@@ -470,31 +433,32 @@ export default function App() {
                 {!transactions.length ? (
                   <p>Belum ada transaksi untuk lembaga ini.</p>
                 ) : (
-                  transactions.map(item => (
-                    <article className="transaction-item" key={item.id}>
+                  transactions.map(x => (
+                    <article className="transaction-item" key={x.id}>
                       <div>
-                        <strong>{item.category_name}</strong>
+                        <strong>{x.category_name}</strong>
                         <small>
-                          {new Date(item.transaction_date + 'T00:00:00').toLocaleDateString('id-ID')}
-                          {' · '}{item.payment_method}
+                          {new Date(x.transaction_date + 'T00:00:00').toLocaleDateString('id-ID')}
+                          {' · '}{x.payment_method}
                         </small>
-                        {item.source_or_recipient && (
-                          <small>{item.source_or_recipient}</small>
-                        )}
-                        {item.note && <small>{item.note}</small>}
+                        {x.source_or_recipient && <small>{x.source_or_recipient}</small>}
+                        {x.note && <small>{x.note}</small>}
                       </div>
                       <strong className={
-                        item.transaction_type === 'income' ? 'amount-income' : 'amount-expense'
+                        x.transaction_type === 'income'
+                          ? 'amount-income'
+                          : 'amount-expense'
                       }>
-                        {item.transaction_type === 'income' ? '+' : '-'}
-                        {money(item.amount)}
+                        {x.transaction_type === 'income' ? '+' : '-'}
+                        {money(x.amount)}
                       </strong>
                     </article>
                   ))
                 )}
               </div>
+
               <p className="notice">
-                Menampilkan maksimal 50 transaksi terakhir untuk lembaga yang dipilih.
+                Menampilkan maksimal 100 transaksi terakhir.
               </p>
             </section>
           </>
